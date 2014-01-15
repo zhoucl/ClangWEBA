@@ -1,0 +1,16 @@
+<ivysettings> 
+    <settings defaultResolver="default" defaultConflictManager="latest-revision" override="true" defaultCacheDir="${ivy.cache.dir}"/>
+    <resolvers>
+        <!--<ibiblio name="ClangWEBA" m2compatible="true" root="${ivy.ClangWEBA.http.root}"/>-->
+        <ibiblio name="public" m2compatible="true" root="${ivy.public.http.root}"/>
+        <ibiblio name="3rd" m2compatible="true" root="${ivy.3rd.http.root}"/>
+        <chain name="default">  
+            <!--<resolver ref="catarc"/> -->
+			<resolver ref="public"/>  
+        	<resolver ref="3rd"/>
+     	</chain>  
+    </resolvers>
+</ivysettings>  
+
+
+

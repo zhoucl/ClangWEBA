@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+
+<project name="ClangWEBA" basedir="../" default="usage" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property name="project.name" value="ClangWEBA" />
+	<property name="project.version" value="0.1" />
+	
+	<property name="ivy.version" value="2.3.0" />
+	<property name="webapp.dir" value="webapp" />
+	<property name="src.dir" value="src" />
+	<property name="build.dir" value="webapp/WEB-INF/classes" />
+	<property name="dist.dir" value="dist" />
+	<property name="lib.dir" value="lib"/>
+	<property name="compiler.args" value="-encoding UTF-8" />
+	<property name="ant.dir" value="ant" />
+	<property name="weblib.dir" value="${webapp.dir}/WEB-INF/lib"/>	
+		
+	<!--ivy relative-->
+	<property file="${ant.dir}/ivy.properties"/>
+	
+	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" 
+		classpath="${ant.library.dir}/ivy-${ivy.version}.jar"/>
+	
+	<ivy:settings file="${ant.dir}/ivysettings.xml"/>
+	
+	<path id="master-classpath">
+		<fileset dir="${lib.dir}/build">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="usage">
+		<echo message="" />
+		<echo message="Web application skeleton build file" />
+		<echo message="*** Make sure you've copied the required JAR files to the lib directory." />
+		<echo message="*** See lib/readme.txt for more information." />
+		<echo message="------------------------------------------------------" />
+		<echo message="" />
+		<echo message="Available targets are:" />
+		<echo message="" />
+		<echo message="clean            --> Clean output dirs" />
+		<echo message="build            --> Compile main Java sources and copy libraries" />
+		<echo message="clean and build  --> Clean output dirs and Compile" />
+		<echo message="jar              --> Jar the Java sources" />
+		<echo message="ivy-retrieve     --> Download the dependecies with Ivy" />
+		<echo message="ivy-clean-cache  --> Clean the cache dependecies with Ivy" />
+		<echo message="warfile          --> Create WAR deployment unit" />
+		<echo message="all              --> Execute ivy-retrieve,clean,build,jar,warfile"/>
+		<echo message="" />
+	</target>
+
+	<target name="clean" description="Clean output dirs (build, dist)">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete dir="${weblib.dir}" />
+	</target>
+
+
+	<target name="build" description="Compile main source tree java files into class files, generate jar files">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${weblib.dir}" />
+		<copy todir="${weblib.dir}" preservelastmodified="false" overwrite="true">
+			<fileset dir="${lib.dir}/release">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<echo message="compiling java files" />
+		<javac destdir="${build.dir}" source="1.7" target="1.7"  debug="true" deprecation="false" 
+			includeantruntime="false" optimize="false" failonerror="true">
+			<compilerarg line="-encoding UTF-8 " />
+			<compilerarg value="-Xlint:unchecked"/>
+			<src path="${src.dir}" />
+			<classpath refid="master-classpath" />
+		</javac>
+		
+		<!-- 由于servlet-api-3.0-alpha-1.jar与Tomcat7的servlet-api.jar冲突 -->
+		<delete file="${weblib.dir}/servlet-api-3.0-alpha-1.jar" />
+	</target>
+
+	<target name="jar">
+		<jar jarfile="${weblib.dir}/${project.name}-${project.version}.jar" compress="true" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Version" value="${project.version}">
+				</attribute>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="warfile" depends="build,jar" description="Build the web application archive">
+		<mkdir dir="${dist.dir}" />
+		<war warfile="${dist.dir}/${project.name}.war" webxml="${webapp.dir}/WEB-INF/web.xml">
+			<fileset dir="${webapp.dir}">
+				<include name="**" />
+				<exclude name="WEB-INF/classes/cn/**" />
+				<exclude name="WEB-INF/web.xml" />
+				<exclude name="WEB-INF/lib/servlet-api.jar" />
+			</fileset>
+			<!--
+			<fileset dir="${basedir}">
+				<include name="sql/**" />
+			</fileset>
+			-->
+		</war>
+	</target>
+	
+	<target name="clean and build" depends="clean,build,jar" description="clean,build,jar"/>
+	
+	<target name="ivy-retrieve" depends="ivy-retrieve-build,ivy-retrieve-release"/>
+	
+	<target name="ivy-retrieve-build">
+		<delete dir="${lib.dir}/build"/>
+		<ivy:retrieve conf="${ivy.build.config}" file="${ant.dir}/ivy.xml" pattern="${lib.dir}/build/[artifact]-[revision].[ext]"/>
+	</target>
+	
+	<target name="ivy-retrieve-release">
+		<delete dir="${lib.dir}/release"/>
+		<ivy:retrieve conf="${ivy.release.config}" file="${ant.dir}/ivy.xml" pattern="${lib.dir}/release/[artifact]-[revision].[ext]"/>
+	</target>
+	
+	<target name="ivy-clean-cache">
+		<ivy:cleancache/>
+		<delete dir="${lib.dir}/build"/>
+		<delete dir="${lib.dir}/release"/>
+	</target>
+	
+	<target name="all" depends="ivy-retrieve,clean,build,jar,warfile" description="all"/>
+</project>

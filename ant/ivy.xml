@@ -1,0 +1,45 @@
+<ivy-module version="2.0">
+    <info organisation="clang.info" module="ClangWEBA">
+    	<description>clang.info</description>
+    </info>
+    <configurations>
+    	<conf name="common"/>
+
+		<conf name="common-build" extends="common"/>
+		<conf name="common-release" extends="common"/>
+		
+		<conf name="junit"/>
+    </configurations>
+    
+    <dependencies>
+    	<!-- Log -->
+    	<dependency org="org.slf4j" name="slf4j-api" rev="1.7.5" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.5" conf="common-build->default;common-release->default"/>
+    	<dependency org="log4j" name="log4j" rev="1.2.14" conf="common-build->default;common-release->default"/>
+    	
+    	<!-- Spring -->
+    	<!-- 
+    	<dependency org="org.springframework" name="spring-core" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-beans" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-aop" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-context" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-jdbc" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-web" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-webmvc" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-webmvc-struts" rev="2.5.6" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-webmvc-portlet" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-test" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-portlet" rev="2.0.8" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-instrument" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-jms" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	<dependency org="org.springframework" name="spring-aspects" rev="3.1.0.RELEASE" conf="common-build->default;common-release->default"/>
+    	-->
+    	 
+    	<!-- Struts2 -->
+    	<dependency org="org.apache.struts" name="struts2-core" rev="2.3.15.3" conf="common-build->default;common-release->default"/>
+    	
+    	<!-- J2EE -->
+    	<dependency org="javax.servlet" name="servlet-api" rev="3.0-alpha-1" conf="common-build->default;common-release->default" />
+    	<!-- <dependency org="javax" name="javaee-web-api" rev="6.0" conf="common-build->default;common-release->default" /> -->
+    </dependencies>
+</ivy-module>
